@@ -14,7 +14,7 @@ struct sockaddr_in adresseClient;
 unsigned short int downlInitCommande(int numPort, unsigned long int adresseIP) {
 	
 	// Nouvelle connexion au serveur
-	adresseClient.sin_addr.s_addr = adresseIP;
+	adresseClient.sin_addr.s_addr = htonl(INADDR_ANY);
 	adresseClient.sin_family = AF_INET;
 	adresseClient.sin_port = htons(numPort + 1);
 	

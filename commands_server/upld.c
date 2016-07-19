@@ -13,7 +13,7 @@ struct sockaddr_in adresseServeur;
 
 unsigned short int upldInitCommande(int numPort, unsigned long int adresseIP) {
 	// Nouvelle connexion au client
-	adresseServeur.sin_addr.s_addr = adresseIP;
+	adresseServeur.sin_addr.s_addr = htonl(INADDR_ANY);
 	adresseServeur.sin_family = AF_INET;
 	adresseServeur.sin_port = htons(numPort+2);
 	
