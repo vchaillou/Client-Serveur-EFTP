@@ -67,6 +67,8 @@ int main(int argc, char ** argv) {
 	int numEssai = 0;
 	int i;
 
+	int numPort = (argc>=2) ? atoi(argv[1]) : SERVER_PORT;
+
 	if(argc > 2) {
 		printf("Usage : %s [Port]", argv[0]);
 		exit(EXIT_ERROR_WRONG_USAGE);
@@ -75,7 +77,7 @@ int main(int argc, char ** argv) {
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
 	adresseServeur.sin_family = AF_INET;
-	adresseServeur.sin_port = htons((argc>=2) ? atoi(argv[1]) : SERVER_PORT);
+	adresseServeur.sin_port = htons(numPort);
 	adresseServeur.sin_addr.s_addr = htonl(INADDR_ANY);
 	
 	if(bind(sockfd, (struct sockaddr *)(&adresseServeur), sizeof(adresseServeur))) {
@@ -83,10 +85,11 @@ int main(int argc, char ** argv) {
 		close(sockfd);
 		exit(EXIT_ERROR_BIND_FAILED);
 	}
-	while(1) {
+	listen(sockfd, 1);
 
+	while(1) {
+		
 		// Connexion avec client
-		listen(sockfd, 1);
 		sockfd_client = accept(sockfd, (struct sockaddr *)(&adresseClient), &clilen);
 		if(read(sockfd_client, buffer, BUFFER_SIZE) <= 0 || strcmp(buffer, CLIENT_INIT) != 0) {
 			printf("L'authentification du client a échoué\n");
@@ -122,6 +125,11 @@ int main(int argc, char ** argv) {
 			continue;
 		}
 		write(sockfd_client, SERVER_WELCOME, strlen(SERVER_WELCOME)+1);
+
+		// Initialisation des commandes
+		for(i=0 ; i < NB_COMMANDS_SERVER ; i++) {
+			commandes[i]->initCommande(numPort, adresseClient.sin_addr.s_addr);
+		}
 		
 		printf("Connexion établie\n");
 
@@ -133,8 +141,7 @@ int main(int argc, char ** argv) {
 			}
 			for(i=0 ; i < NB_COMMANDS_SERVER ; i++) {
 				if(strcmp(buffer, commandes[i]->idCommande) == 0) {
-					if(commandes[i]->doCommande(sockfd_client, adresseClient.sin_addr.s_addr, 
-						(argc>=2) ? atoi(argv[1]) : SERVER_PORT)) {
+					if(commandes[i]->doCommande(sockfd_client)) {
 						printf("Une erreur s'est produite dans la commande \"%s\"\n", 
 							commandes[i]->idCommande);
 					}
@@ -145,7 +152,13 @@ int main(int argc, char ** argv) {
 		while(strcmp(buffer, CLIENT_DISCONNECT) != 0);
 		close(sockfd_client);
 		printf("Déconnexion\n");
+		
+		// Désinitialisation des commandes
+		for(i=0 ; i < NB_COMMANDS_SERVER ; i++) {
+			commandes[i]->deinitCommande();
+		}
 	}
+
 	close(sockfd);
 	
 	exit(EXIT_WITH_NO_ERROR);

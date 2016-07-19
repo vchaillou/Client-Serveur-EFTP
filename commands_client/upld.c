@@ -8,7 +8,19 @@
 
 #include "upld.h"
 
-unsigned short int upldDoCommande(int sockfd_C1, unsigned long adresseIP, int port) {
+int upldNumPort = 0;
+unsigned long int upldAdresseIP;
+
+unsigned short int upldInitCommande(int numPort, unsigned long int adresseIP) {
+	upldNumPort = numPort + 2;
+	upldAdresseIP = adresseIP;
+	return EXIT_WITH_NO_ERROR;
+}
+
+void upldDeinitCommande() {
+}
+
+unsigned short int upldDoCommande(int sockfd_C1) {
 	struct sockaddr_in adresseServeur;
 	int sockfd_D2;
 	char nomFichier[TAILLE_NOM_FICHIER];
@@ -38,9 +50,9 @@ unsigned short int upldDoCommande(int sockfd_C1, unsigned long adresseIP, int po
 	}
 
 	// Nouvelle connexion au serveur
-	adresseServeur.sin_addr.s_addr = adresseIP;
+	adresseServeur.sin_addr.s_addr = upldAdresseIP;
 	adresseServeur.sin_family = AF_INET;
-	adresseServeur.sin_port = htons(port+2);
+	adresseServeur.sin_port = htons(upldNumPort);
 	
 	sockfd_D2 = socket(AF_INET, SOCK_STREAM, 0);
 	if(connect(sockfd_D2, (struct sockaddr *)(&adresseServeur), sizeof(adresseServeur))) {
@@ -60,6 +72,8 @@ unsigned short int upldDoCommande(int sockfd_C1, unsigned long adresseIP, int po
 
 commande upldCommande = {
 	"upld",
+	upldInitCommande,
+	upldDeinitCommande,
 	upldDoCommande
 };
 

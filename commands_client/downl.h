@@ -6,8 +6,6 @@
 
 #include "../commun.h"
 
-unsigned short int downlDoCommande(int sockfd_C1, unsigned long adresseIP, int port);
-
 commande downlCommande;
 
 #endif

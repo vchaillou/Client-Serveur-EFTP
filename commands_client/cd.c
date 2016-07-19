@@ -7,7 +7,14 @@
 
 #include "cd.h"
 
-unsigned short int cdDoCommande(int sockfd_C1, unsigned long adresseIP, int port) {
+unsigned short int cdInitCommande(int numPort, unsigned long int adresseIP) {
+	return EXIT_WITH_NO_ERROR;
+}
+
+void cdDeinitCommande() {
+}
+
+unsigned short int cdDoCommande(int sockfd_C1) {
 	char nomRepertoire[TAILLE_NOM_FICHIER];
 
 	printf("Veuillez entrer le nom du répertoire : ");
@@ -28,6 +35,8 @@ unsigned short int cdDoCommande(int sockfd_C1, unsigned long adresseIP, int port
 
 commande cdCommande = {
 	"cd",
+	cdInitCommande,
+	cdDeinitCommande,
 	cdDoCommande
 };
 

@@ -8,7 +8,9 @@
 
 typedef struct {
 	char * idCommande;
-	unsigned short int (*doCommande)(int sockfd_C1, unsigned long adresseIP, int port);
+	unsigned short int (*initCommande)(int numPort, unsigned long int adresseIP);
+	void (*deinitCommande)();
+	unsigned short int (*doCommande)(int sockfd_C1);
 } commande;
 
 #define COMMAND_UPLD           "upld"

@@ -44,6 +44,8 @@ int main(int argc, char ** argv) {
 	char buffer[BUFFER_SIZE];
 	int i;
 
+	int numPort = (argc>=3) ? atoi(argv[2]) : SERVER_PORT;
+
 	if(argc > 3) {
 		printf("Usage : %s [Adresse IP] [Port réseau]", argv[0]);
 		exit(EXIT_ERROR_WRONG_USAGE);
@@ -55,7 +57,7 @@ int main(int argc, char ** argv) {
 
 	adresseServeur.sin_addr.s_addr = 0;
 	adresseServeur.sin_family = AF_INET;
-	adresseServeur.sin_port = htons((argc>=3) ? atoi(argv[2]) : SERVER_PORT);
+	adresseServeur.sin_port = htons(numPort);
 	inet_pton(AF_INET, (argc>=2) ? argv[1] : DEFAULT_SERVER_ADDRESS, &(adresseServeur.sin_addr.s_addr));
 
 	if(adresseServeur.sin_addr.s_addr < 1) {
@@ -111,14 +113,18 @@ int main(int argc, char ** argv) {
 		exit(EXIT_ERROR_WRONG_USER_OR_PASSWORD);
 	}
 
+	// Initialisation des commandes
+	for(i=0 ; i < NB_COMMANDS_CLIENT ; i++) {
+		commandes[i]->initCommande(numPort, adresseServeur.sin_addr.s_addr);
+	}
+
 	// Interpréteur de commandes
 	do {
 		printf(" >>> ");
 		scanf("%s", buffer);
 		for(i=0 ; i < NB_COMMANDS_CLIENT ; i++) {
 			if(strcmp(buffer, commandes[i]->idCommande) == 0) {
-				if(commandes[i]->doCommande(sockfd, adresseServeur.sin_addr.s_addr, 
-					(argc>=3) ? atoi(argv[2]) : SERVER_PORT)) {
+				if(commandes[i]->doCommande(sockfd)) {
 					printf("Une erreur s'est produite dans la commande \"%s\"\n", 
 						commandes[i]->idCommande);
 				}
@@ -128,6 +134,11 @@ int main(int argc, char ** argv) {
 	}
 	while(strcmp(buffer, "exit") != 0);
 	write(sockfd, CLIENT_DISCONNECT, strlen(CLIENT_DISCONNECT)+1);
+
+	// Désinitialisation des commandes
+	for(i=0 ; i < NB_COMMANDS_CLIENT ; i++) {
+		commandes[i]->deinitCommande();
+	}
 	
 	close(sockfd);
 	exit(EXIT_WITH_NO_ERROR);

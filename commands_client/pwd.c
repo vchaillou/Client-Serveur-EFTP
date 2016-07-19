@@ -8,7 +8,14 @@
 
 #include "pwd.h"
 
-unsigned short int pwdDoCommande(int sockfd_C1, unsigned long adresseIP, int port) {
+unsigned short int pwdInitCommande(int numPort, unsigned long int adresseIP) {
+	return EXIT_WITH_NO_ERROR;
+}
+
+void pwdDeinitCommande() {
+}
+
+unsigned short int pwdDoCommande(int sockfd_C1) {
 	int * status = NULL;
 	switch(fork()) {
 		case -1:    // erreur
@@ -28,6 +35,8 @@ unsigned short int pwdDoCommande(int sockfd_C1, unsigned long adresseIP, int por
 
 commande pwdCommande = {
 	"pwd",
+	pwdInitCommande,
+	pwdDeinitCommande,
 	pwdDoCommande
 };
 

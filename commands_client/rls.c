@@ -7,7 +7,14 @@
 
 #include "rls.h"
 
-unsigned short int rlsDoCommande(int sockfd_C1, unsigned long adresseIP, int port) {
+unsigned short int rlsInitCommande(int numPort, unsigned long int adresseIP) {
+	return EXIT_WITH_NO_ERROR;
+}
+
+void rlsDeinitCommande() {
+}
+
+unsigned short int rlsDoCommande(int sockfd_C1) {
 	int nbOctetsLus;
 	char buffer[BUFFER_SIZE];
 
@@ -28,6 +35,8 @@ unsigned short int rlsDoCommande(int sockfd_C1, unsigned long adresseIP, int por
 
 commande rlsCommande = {
 	"rls",
+	rlsInitCommande,
+	rlsDeinitCommande,
 	rlsDoCommande
 };
 

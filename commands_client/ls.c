@@ -8,7 +8,14 @@
 
 #include "ls.h"
 
-unsigned short int lsDoCommande(int sockfd_C1, unsigned long adresseIP, int port) {
+unsigned short int lsInitCommande(int numPort, unsigned long int adresseIP) {
+	return EXIT_WITH_NO_ERROR;
+}
+
+void lsDeinitCommande() {
+}
+
+unsigned short int lsDoCommande(int sockfd_C1) {
 	int * status = NULL;
 	switch(fork()) {
 		case -1:    // erreur
@@ -28,6 +35,8 @@ unsigned short int lsDoCommande(int sockfd_C1, unsigned long adresseIP, int port
 
 commande lsCommande = {
 	"ls",
+	lsInitCommande,
+	lsDeinitCommande,
 	lsDoCommande
 };
 

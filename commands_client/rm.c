@@ -8,7 +8,14 @@
 
 #include "rm.h"
 
-unsigned short int rmDoCommande(int sockfd_C1, unsigned long adresseIP, int port) {
+unsigned short int rmInitCommande(int numPort, unsigned long int adresseIP) {
+	return EXIT_WITH_NO_ERROR;
+}
+
+void rmDeinitCommande() {
+}
+
+unsigned short int rmDoCommande(int sockfd_C1) {
 	int * status = NULL;
 	char nomFichier[256];
 
@@ -33,6 +40,8 @@ unsigned short int rmDoCommande(int sockfd_C1, unsigned long adresseIP, int port
 
 commande rmCommande = {
 	"rm",
+	rmInitCommande,
+	rmDeinitCommande,
 	rmDoCommande
 };
 

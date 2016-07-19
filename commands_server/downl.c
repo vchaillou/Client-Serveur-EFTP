@@ -8,12 +8,26 @@
 
 #include "downl.h"
 
-unsigned short int downlDoCommande(int sockfd_C1, unsigned long adresseIP, int port) {
+int downlNumPort = 0;
+unsigned long downlAdresseIP;
+
+unsigned short int downlInitCommande(int numPort, unsigned long int adresseIP) {
+	downlNumPort = numPort + 1;
+	downlAdresseIP = adresseIP;
+	return EXIT_WITH_NO_ERROR;
+}
+
+void downlDeinitCommande() {
+}
+
+unsigned short int downlDoCommande(int sockfd_C1) {
 	struct sockaddr_in adresseClient;
 	int sockfd_D1;
 	char buffer[BUFFER_SIZE];
 	int nbOctetsLus;
 	FILE * file;
+
+	write(sockfd_C1, SERVER_READY, strlen(SERVER_READY)+1);
 
 	if(read(sockfd_C1, buffer, BUFFER_SIZE) <= 0) {
 		printf("Connexion perdue\n");
@@ -21,9 +35,9 @@ unsigned short int downlDoCommande(int sockfd_C1, unsigned long adresseIP, int p
 	}
 
 	// Nouvelle connexion au client
-	adresseClient.sin_addr.s_addr = adresseIP;
+	adresseClient.sin_addr.s_addr = downlAdresseIP;
 	adresseClient.sin_family = AF_INET;
-	adresseClient.sin_port = htons(port+1);
+	adresseClient.sin_port = htons(downlNumPort);
 	
 	sockfd_D1 = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -52,6 +66,8 @@ unsigned short int downlDoCommande(int sockfd_C1, unsigned long adresseIP, int p
 
 commande downlCommande = {
 	COMMAND_DOWNL,
+	downlInitCommande,
+	downlDeinitCommande,
 	downlDoCommande
 };
 

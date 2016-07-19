@@ -7,7 +7,14 @@
 
 #include "rcd.h"
 
-unsigned short int rcdDoCommande(int sockfd_C1, unsigned long adresseIP, int port) {
+unsigned short int rcdInitCommande(int numPort, unsigned long int adresseIP) {
+	return EXIT_WITH_NO_ERROR;
+}
+
+void rcdDeinitCommande() {
+}
+
+unsigned short int rcdDoCommande(int sockfd_C1) {
 	char buffer[BUFFER_SIZE];
 
 	write(sockfd_C1, COMMAND_RCD, strlen(COMMAND_RCD)+1);
@@ -30,6 +37,8 @@ unsigned short int rcdDoCommande(int sockfd_C1, unsigned long adresseIP, int por
 
 commande rcdCommande = {
 	"rcd",
+	rcdInitCommande,
+	rcdDeinitCommande,
 	rcdDoCommande
 };
 

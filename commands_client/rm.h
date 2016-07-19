@@ -6,8 +6,6 @@
 
 #include "../commun.h"
 
-unsigned short int rmDoCommande(int sockfd_C1, unsigned long adresseIP, int port);
-
 commande rmCommande;
 
 #endif

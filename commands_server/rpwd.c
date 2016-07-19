@@ -9,7 +9,14 @@
 
 #include "rpwd.h"
 
-unsigned short int rpwdDoCommande(int sockfd_C1, unsigned long adresseIP, int port) {
+unsigned short int rpwdInitCommande(int numPort, unsigned long int adresseIP) {
+	return EXIT_WITH_NO_ERROR;
+}
+
+void rpwdDeinitCommande() {
+}
+
+unsigned short int rpwdDoCommande(int sockfd_C1) {
 	int nbOctetsLus;
 	char buffer[BUFFER_SIZE];
 
@@ -47,6 +54,8 @@ unsigned short int rpwdDoCommande(int sockfd_C1, unsigned long adresseIP, int po
 
 commande rpwdCommande = {
 	COMMAND_RPWD,
+	rpwdInitCommande,
+	rpwdDeinitCommande,
 	rpwdDoCommande
 };
 

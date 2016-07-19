@@ -6,8 +6,6 @@
 
 #include "../commun.h"
 
-unsigned short int pwdDoCommande(int sockfd_C1, unsigned long adresseIP, int port);
-
 commande pwdCommande;
 
 #endif
