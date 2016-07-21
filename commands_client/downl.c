@@ -71,6 +71,8 @@ unsigned short int downlDoCommande(int sockfd_C1) {
 
 	if(strcmp(buffer, SERVER_UNKNOWN) == 0) {
 		printf("Le serveur ne peut pas ouvrir le fichier\n");
+		fclose(file);
+		remove(nomFichier);
 		close(sockfd_D1_server);
 		return EXIT_ERROR_CANNOT_OPEN_FILE;
 	}

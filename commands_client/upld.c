@@ -37,6 +37,14 @@ unsigned short int upldDoCommande(int sockfd_C1) {
 	}
 
 	write(sockfd_C1, COMMAND_UPLD, strlen(COMMAND_UPLD)+1);
+	
+	// Pour éviter les deadlocks
+	if(read(sockfd_C1, buffer, BUFFER_SIZE) <= 0 || (strcmp(buffer, SERVER_READY) != 0 && 
+		strcmp(buffer, SERVER_NOT_READY) != 0)) {
+		printf("Le serveur n'a pas répondu correctement\n");
+		return EXIT_ERROR_LOST_CONNECTION;
+	}
+
 	write(sockfd_C1, nomFichier, strlen(nomFichier)+1);
 
 	if(read(sockfd_C1, buffer, BUFFER_SIZE) <= 0 || (strcmp(buffer, SERVER_READY) != 0 && 

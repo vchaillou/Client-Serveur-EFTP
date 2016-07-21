@@ -39,6 +39,9 @@ unsigned short int upldDoCommande(int sockfd_C1) {
 	char buffer[BUFFER_SIZE];
 	int nbOctetsLus;
 	FILE * file;
+	
+	// Pour éviter les deadlocks
+	write(sockfd_C1, SERVER_READY, strlen(SERVER_READY)+1);
 
 	if(read(sockfd_C1, buffer, BUFFER_SIZE) <= 0) {
 		printf("Connexion perdue\n");
